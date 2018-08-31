@@ -1,0 +1,156 @@
+﻿<Window x:Class="Meissner.MicrosoftPlanner.IssueCreationView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+        xmlns:youtrackOutlookDesktop="clr-namespace:Meissner.MicrosoftPlanner"
+        mc:Ignorable="d" Height="508" Width="728" Topmost="True"
+        d:DataContext="{d:DesignInstance Type={x:Type youtrackOutlookDesktop:IssueCreationViewModel}}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="80" />
+            <ColumnDefinition Width="288*" />
+            <ColumnDefinition Width="61*" />
+            <ColumnDefinition Width="229*"/>
+            <ColumnDefinition Width="62*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="17" />
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="Auto" MinHeight="19" />
+            <RowDefinition Height="Auto" MinHeight="20" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="Auto" MinHeight="14" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"
+                   Margin="0,0,0,10"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Text="Create Microsoft Planner Task" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Text="Gruppe: " Width="50" />
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  DisplayMemberPath="DisplayName"
+                  ItemsSource="{Binding Path=PlannerGroups,Mode=OneWay}"
+                  SelectedItem="{Binding Path=SelectedGroup,Mode=TwoWay}" />
+
+        <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="Plan: " Width="40" />
+        <ComboBox Grid.Row="2" Grid.Column="1"
+                  DisplayMemberPath="Title"
+                  ItemsSource="{Binding Path=PlannerPlans,Mode=OneWay}"
+                  SelectedItem="{Binding Path=SelectedPlan,Mode=TwoWay}" />
+
+        <TextBlock Grid.Row="3" HorizontalAlignment="Right" Text="Projekt: " Width="41" />
+        <ComboBox Grid.Row="3" Grid.Column="1"
+                  DisplayMemberPath="Name"
+                  ItemsSource="{Binding Path=PlannerBuckets}"
+                  SelectedItem="{Binding Path=SelectedBucket}" />
+
+        <TextBlock Grid.Row="4" HorizontalAlignment="Right" Text="Aufgabe: " Width="50" />
+        <TextBlock Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right" Text="Titel: " Margin="0,0,6,0" Width="28" 
+                   Visibility="{Binding Path=ActionsVisible, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" 
+                 Visibility="{Binding Path=ActionsVisible, UpdateSourceTrigger=PropertyChanged}" 
+                 Text="{Binding TaskTitle, UpdateSourceTrigger=PropertyChanged}" />
+        <ComboBox Grid.Row="4" Grid.Column="1"
+                  DisplayMemberPath="Title"
+                  ItemsSource="{Binding Path=PlannerTasks, Mode=OneWay}"
+                  SelectedItem="{Binding Path=SelectedTask, Mode=TwoWay}" />
+
+        <TextBlock Grid.Row="6" HorizontalAlignment="Right" Text="Status: " Width="38" />
+        <ComboBox Grid.Row="6" Grid.Column="1"
+                  DisplayMemberPath="Name"
+                  ItemsSource="{Binding Path=CustomPercentCompleteGroups}"
+                  SelectedItem="{Binding Path=SelectedPercentComplete}" />
+
+        <TextBlock Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right" Text="Kategorie: " Width="57"  />
+        <ComboBox Grid.Row="5" Grid.Column="1"
+                  DisplayMemberPath="Description"
+                  ItemsSource="{Binding Path=CustomCategoryGroups}"
+                  SelectedItem="{Binding Path=SelectedCategory}" />
+
+        <TextBlock Grid.Row="7" Grid.Column="0" HorizontalAlignment="Right" Text="Zugewiesen: " Width="69" Visibility="Hidden"/>
+        <ComboBox Grid.Row="7" Grid.Column="1" Visibility="Hidden"
+                  DisplayMemberPath="Login"
+                  ItemsSource="{Binding Assignees}"
+                  SelectedItem="{Binding SelectedAssignee}" />
+
+        <TextBlock Grid.Row="8" Grid.Column="0" HorizontalAlignment="Right" Text="Termin: " Width="43"  />
+        <DatePicker Grid.Column="1"   Grid.Row="8"  Grid.RowSpan="1"   
+                    SelectedDate="{Binding SelectedDueDate, Mode=TwoWay}" 
+                    Height="25" VerticalAlignment="Bottom" >
+        </DatePicker>
+
+        <TextBlock Grid.Row="10" Grid.Column="0" HorizontalAlignment="Right" Text="Anhänge: " Margin="0,0,6,0" Width="53" />
+        <StackPanel Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <ItemsControl ItemsSource="{Binding Path=Attachments}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=DisplayName}" />
+                            <Button Height="16" Width="16" Margin="5,0" ToolTip="Remove"
+                                    Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Window }, Path=DataContext.RemoveAttachmentCommand}"
+                                    CommandParameter="{Binding}">
+                                <Image Source="../delete.png"></Image>
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </StackPanel>
+
+
+        <TextBlock Grid.Row="12" Grid.Column="0" HorizontalAlignment="Right" Text="Beschreibung: " Width="75" />
+        <TextBox Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="3"
+                 Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}" Margin="0,1,10,1" />
+
+        <StackPanel Grid.Row="13" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" Width="115">
+            <Button  Margin="10,0" Content="Cancel">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <ei:CallMethodAction
+                                    TargetObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window, AncestorLevel=1}}"
+                                    MethodName="Close" />
+
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Button Content="Submit"
+                    Command="{Binding Path=SubmitCommand}" Height="21" VerticalAlignment="Bottom">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <ei:CallMethodAction
+                                    TargetObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window, AncestorLevel=1}}"
+                                    MethodName="Close" />
+
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+        </StackPanel>
+
+        <Label Content="*" Grid.Column="0" HorizontalAlignment="Left"  Grid.Row="2" VerticalAlignment="Top" Height="25" Width="15"/>
+        <Label Content="*" Grid.Column="0" HorizontalAlignment="Left"  Grid.Row="3" VerticalAlignment="Top" Height="25" Width="15"/>
+        <Label Content="*" Grid.Column="0" HorizontalAlignment="Left"  Grid.Row="4" VerticalAlignment="Top" Height="25" Width="15"/>
+        <Label Content="*" Grid.Column="0" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="15"/>
+        <Label Content="*" Grid.Column="0" HorizontalAlignment="Left" Grid.Row="5" VerticalAlignment="Top" Height="25" Width="15"/>
+    </Grid>
+</Window>
